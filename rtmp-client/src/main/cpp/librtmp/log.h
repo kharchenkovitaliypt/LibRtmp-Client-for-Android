@@ -24,6 +24,9 @@
 #ifndef __RTMP_LOG_H__
 #define __RTMP_LOG_H__
 
+//#ifndef _DEBUG
+#define _DEBUG
+
 #include <stdio.h>
 #include <stdarg.h>
 #include <stdint.h>
@@ -37,6 +40,11 @@ extern "C" {
 #ifdef _DEBUG
 #undef NODEBUG
 #endif
+
+#include <android/log.h>
+
+#define  LOG_TAG    "RtmpClient"
+#define  LOGD(...)  __android_log_print(ANDROID_LOG_DEBUG,LOG_TAG,__VA_ARGS__)
 
 typedef enum
 { RTMP_LOGCRIT=0, RTMP_LOGERROR, RTMP_LOGWARNING, RTMP_LOGINFO,
@@ -58,7 +66,9 @@ void RTMP_LogStatus(const char *format, ...);
 void RTMP_Log(int level, const char *format, ...);
 #endif
 void RTMP_LogHex(int level, const uint8_t *data, unsigned long len);
+void RTMP_LogHexTagged(char* tag, const uint8_t *data, unsigned long len);
 void RTMP_LogHexString(int level, const uint8_t *data, unsigned long len);
+void RTMP_LogHexStringTagged(char* tag, const uint8_t *data, unsigned long len);
 void RTMP_LogSetLevel(RTMP_LogLevel lvl);
 RTMP_LogLevel RTMP_LogGetLevel(void);
 

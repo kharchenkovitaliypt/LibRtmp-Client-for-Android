@@ -332,7 +332,7 @@ RTMP_Init(RTMP *r)
   r->m_sb.sb_socket = -1;
   r->m_inChunkSize = RTMP_DEFAULT_CHUNKSIZE;
   r->m_outChunkSize = RTMP_DEFAULT_CHUNKSIZE;
-  r->m_nBufferMS = 30000;
+  r->m_nBufferMS = 1000;
   r->m_nClientBW = 2500000;
   r->m_nClientBW2 = 2;
   r->m_nServerBW = 2500000;
