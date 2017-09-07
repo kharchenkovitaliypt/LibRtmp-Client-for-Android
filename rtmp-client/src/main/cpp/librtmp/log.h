@@ -24,8 +24,7 @@
 #ifndef __RTMP_LOG_H__
 #define __RTMP_LOG_H__
 
-//#ifndef _DEBUG
-#define _DEBUG
+//#define _DEBUG
 
 #include <stdio.h>
 #include <stdarg.h>
