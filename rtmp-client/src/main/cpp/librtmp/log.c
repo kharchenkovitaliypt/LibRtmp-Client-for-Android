@@ -32,43 +32,45 @@
 
 #define MAX_PRINT_LEN	2048
 
-RTMP_LogLevel RTMP_debuglevel = RTMP_LOGALL;
+RTMP_LogLevel RTMP_debuglevel = RTMP_LOGERROR;
 
 static int neednl;
 
 static FILE *fmsg;
 
-static RTMP_LogCallback rtmp_log_default, *cb = rtmp_log_default;
+static RTMP_LogCallback rtmp_log_default, *cb = rtmp_log_stub;
 
 static const char *levels[] = {
   "CRIT", "ERROR", "WARNING", "INFO",
   "DEBUG", "DEBUG2"
 };
 
+static void rtmp_log_stub(int level, const char *format, va_list vl) {}
+
 static void rtmp_log_default(int level, const char *format, va_list vl)
 {
 //    __android_log_vprint(ANDROID_LOG_DEBUG, LOG_TAG, format, vl);
 
-//	char str[MAX_PRINT_LEN]="";
-//
-//	vsnprintf(str, MAX_PRINT_LEN-1, format, vl);
-//
-//	/* Filter out 'no-name' */
-//	if ( RTMP_debuglevel<RTMP_LOGALL && strstr(str, "no-name" ) != NULL )
-//		return;
-//
-//	if ( !fmsg ) fmsg = stderr;
-//
-//	if ( level <= RTMP_debuglevel ) {
-//		if (neednl) {
-//			putc('\n', fmsg);
-//			neednl = 0;
-//		}
-//		fprintf(fmsg, "%s: %s\n", levels[level], str);
-//#ifdef _DEBUG
-//		fflush(fmsg);
-//#endif
-//	}
+	char str[MAX_PRINT_LEN]="";
+
+	vsnprintf(str, MAX_PRINT_LEN-1, format, vl);
+
+	/* Filter out 'no-name' */
+	if ( RTMP_debuglevel<RTMP_LOGALL && strstr(str, "no-name" ) != NULL )
+		return;
+
+	if ( !fmsg ) fmsg = stderr;
+
+	if ( level <= RTMP_debuglevel ) {
+		if (neednl) {
+			putc('\n', fmsg);
+			neednl = 0;
+		}
+		fprintf(fmsg, "%s: %s\n", levels[level], str);
+#ifdef _DEBUG
+		fflush(fmsg);
+#endif
+	}
 }
 
 void RTMP_LogSetOutput(FILE *file)
