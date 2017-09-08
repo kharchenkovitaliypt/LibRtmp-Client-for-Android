@@ -1,6 +1,5 @@
 apply plugin: "com.android.library"
 
-
 android {
     compileSdkVersion  21 // sdk level 21 lets ndk generate resources for archs such as arm64.
     buildToolsVersion  "25.0.3"
@@ -19,8 +18,6 @@ android {
             }
         }
     }
-
-
 
     buildTypes {
         release {
@@ -59,8 +56,8 @@ android {
 
 
 //}
-
-android.productFlavors {
+//
+//android.productFlavors {
     // for detailed abiFilter descriptions, refer to "Supported ABIs" @
     // https://developer.android.com/ndk/guides/abis.html#sa
     // build one including all productFlavors
@@ -84,7 +81,7 @@ android.productFlavors {
      */
 
 
-}
+//}
 
 
 
@@ -141,10 +138,10 @@ artifacts {
 }
 
 
-// Bintray
-Properties properties = new Properties()
-properties.load(project.rootProject.file('local.properties').newDataInputStream())
-
+//// Bintray
+//Properties properties = new Properties()
+//properties.load(project.rootProject.file('local.properties').newDataInputStream())
+//
 //bintray {
 //    user = properties.getProperty("bintray.user")
 //    key = properties.getProperty("bintray.apikey")
