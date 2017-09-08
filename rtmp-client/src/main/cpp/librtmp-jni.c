@@ -13,6 +13,40 @@
 
 //RTMP *rtmp = NULL;
 
+int* getInteger(JNIEnv *env, jobject obj, char* fieldName) {
+
+    jclass objCls = (*env)->GetObjectClass(env, obj);
+    jfieldID objFieldId = (*env)->GetFieldID(env, objCls, fieldName, "Ljava/lang/Integer;");
+    jobject objField= (*env)->GetObjectField(env, obj, objFieldId);
+    if((*env)->IsSameObject(env, objField, NULL)) {
+        return NULL;
+    }
+
+    jclass integerCls = (*env)->FindClass(env, "java/lang/Integer");
+    jmethodID intValueMethodId = (*env)->GetMethodID(env, integerCls, "intValue", "()I");
+
+    int value = (*env)->CallIntMethod(env, objField, intValueMethodId);
+    int * valuePtr = (int *)malloc(sizeof(int));
+    *valuePtr = value;
+    return valuePtr;
+}
+
+struct RTMPConfig createRTMPConfig(JNIEnv * env, jobject jc) {
+    RTMPConfig config;
+    if((*env)->IsSameObject(env, jc, NULL)) {
+        config.chunkSize = NULL;
+        config.bufferMs = NULL;
+    } else {
+        config.chunkSize = getInteger(env, jc, "chunkSize");
+        config.bufferMs = getInteger(env, jc, "bufferMs");
+    }
+    return config;
+}
+
+void freeRtmpConfig(RTMPConfig config) {
+    free(config.chunkSize);
+    free(config.bufferMs);
+}
 
 JNIEXPORT jlong JNICALL
 Java_net_butterflytv_rtmp_1client_RtmpClient_nativeAlloc(JNIEnv *env, jobject instance) {
@@ -29,7 +63,7 @@ Java_net_butterflytv_rtmp_1client_RtmpClient_nativeAlloc(JNIEnv *env, jobject in
  * Signature: (Ljava/lang/String;)I
  */
 JNIEXPORT jint JNICALL Java_net_butterflytv_rtmp_1client_RtmpClient_nativeOpen
-        (JNIEnv * env, jobject thiz, jstring url_, jboolean isPublishMode, jlong rtmpPointer) {
+        (JNIEnv * env, jobject thiz, jstring url_, jobject jConfig, jboolean isPublishMode, jlong rtmpPointer) {
 
     const char *url = (*env)->GetStringUTFChars(env, url_, 0);
     RTMP *rtmp = (RTMP *) rtmpPointer;
@@ -38,7 +72,10 @@ JNIEXPORT jint JNICALL Java_net_butterflytv_rtmp_1client_RtmpClient_nativeOpen
         return -1;
     }
 
-	RTMP_Init(rtmp);
+    struct RTMPConfig config = createRTMPConfig(env, jConfig);
+	RTMP_Init(rtmp, config);
+    freeRtmpConfig(config);
+
 	int ret = RTMP_SetupURL(rtmp, url);
 
     if (!ret) {
@@ -62,8 +99,6 @@ JNIEXPORT jint JNICALL Java_net_butterflytv_rtmp_1client_RtmpClient_nativeOpen
     (*env)->ReleaseStringUTFChars(env, url_, url);
     return 1;
 }
-
-
 
 /*
  * Class:     net_butterflytv_rtmp_client_RtmpClient

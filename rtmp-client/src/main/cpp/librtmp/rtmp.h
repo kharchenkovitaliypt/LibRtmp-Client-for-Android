@@ -59,6 +59,7 @@ extern "C"
 #define RTMP_PROTOCOL_RTMFP     RTMP_FEATURE_MFP
 
 #define RTMP_DEFAULT_CHUNKSIZE	128
+#define RTMP_DEFAULT_BUFFER_MS	10000
 
 /* needs to fit largest number of bytes recv() may return */
 #define RTMP_BUFFER_CACHE_SIZE (16*1024)
@@ -286,6 +287,11 @@ extern "C"
     RTMP_LNK Link;
   } RTMP;
 
+  typedef struct RTMPConfig {
+      int *chunkSize;
+      int *bufferMs;
+  } RTMPConfig;
+
   int RTMP_ParseURL(const char *url, int *protocol, AVal *host,
 		     unsigned int *port, AVal *playpath, AVal *app);
 
@@ -335,7 +341,7 @@ extern "C"
   int RTMP_GetNextMediaPacket(RTMP *r, RTMPPacket *packet);
   int RTMP_ClientPacket(RTMP *r, RTMPPacket *packet);
 
-  void RTMP_Init(RTMP *r);
+  void RTMP_Init(RTMP *r, RTMPConfig c);
   void RTMP_Close(RTMP *r);
   RTMP *RTMP_Alloc(void);
   void RTMP_Free(RTMP *r);

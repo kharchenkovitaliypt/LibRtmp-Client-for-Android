@@ -38,7 +38,7 @@ static int neednl;
 
 static FILE *fmsg;
 
-static RTMP_LogCallback rtmp_log_default, *cb = rtmp_log_stub;
+static RTMP_LogCallback rtmp_log_default, *cb = rtmp_log_default;
 
 static const char *levels[] = {
   "CRIT", "ERROR", "WARNING", "INFO",
@@ -49,6 +49,7 @@ static void rtmp_log_stub(int level, const char *format, va_list vl) {}
 
 static void rtmp_log_default(int level, const char *format, va_list vl)
 {
+	return;
 //    __android_log_vprint(ANDROID_LOG_DEBUG, LOG_TAG, format, vl);
 
 	char str[MAX_PRINT_LEN]="";

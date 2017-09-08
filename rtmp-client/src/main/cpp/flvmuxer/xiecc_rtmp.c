@@ -150,7 +150,7 @@ int rtmp_open_for_write(const char *url, uint32_t video_width, uint32_t video_he
         return -1;
     }
 
-    RTMP_Init(rtmp);
+    //RTMP_Init(rtmp);
     int ret = RTMP_SetupURL(rtmp, url);
 
     if (!ret) {

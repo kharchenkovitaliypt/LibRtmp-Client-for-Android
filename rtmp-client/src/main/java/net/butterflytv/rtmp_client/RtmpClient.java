@@ -1,5 +1,7 @@
 package net.butterflytv.rtmp_client;
 
+import android.util.Log;
+
 import java.io.IOException;
 
 /**
@@ -11,8 +13,8 @@ public class RtmpClient {
         System.loadLibrary("rtmp-jni");
     }
 
+    private final static int OPEN_SUCCESS = 1;
 
-    public final static int OPEN_SUCCESS = 1;
     private long rtmpPointer = 0;
 
     public static class RtmpIOException extends IOException {
@@ -48,9 +50,24 @@ public class RtmpClient {
 
     }
 
+    public static class Config {
+        public Integer bufferMs; // Default 10000
+        public Integer chunkSize; // Default 128
+
+        public Config() {}
+
+        public Config(int bufferMs) {
+            this.bufferMs = bufferMs;
+        }
+    }
+
     public void open(String url, boolean isPublishMode) throws RtmpIOException {
+        open(url, null, isPublishMode);
+    }
+
+    public void open(String url, Config config, boolean isPublishMode) throws RtmpIOException {
         rtmpPointer = nativeAlloc();
-        int result = nativeOpen(url, isPublishMode, rtmpPointer);
+        int result = nativeOpen(url, config, isPublishMode, rtmpPointer);
         if (result != OPEN_SUCCESS) {
             throw new RtmpIOException(result);
         }
@@ -71,7 +88,7 @@ public class RtmpClient {
      *
      * returns {@link #OPEN_SUCCESS} if it is successful, throws RtmpIOException if it is failed
      */
-    private native int nativeOpen(String url, boolean isPublishMode, long rtmpPointer);
+    private native int nativeOpen(String url, Config config, boolean isPublishMode, long rtmpPointer);
 
     /**
      * read data from rtmp connection

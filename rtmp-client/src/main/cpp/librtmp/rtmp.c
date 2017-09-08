@@ -321,26 +321,26 @@ RTMP_Free(RTMP *r)
 }
 
 void
-RTMP_Init(RTMP *r)
+RTMP_Init(RTMP *r, RTMPConfig c)
 {
 #ifdef CRYPTO
   if (!RTMP_TLS_ctx)
     RTMP_TLS_Init();
 #endif
 
-  memset(r, 0, sizeof(RTMP));
-  r->m_sb.sb_socket = -1;
-  r->m_inChunkSize = RTMP_DEFAULT_CHUNKSIZE;
-  r->m_outChunkSize = RTMP_DEFAULT_CHUNKSIZE;
-  r->m_nBufferMS = 1000;
-  r->m_nClientBW = 2500000;
-  r->m_nClientBW2 = 2;
-  r->m_nServerBW = 2500000;
-  r->m_fAudioCodecs = 3191.0;
-  r->m_fVideoCodecs = 252.0;
-  //making timeout value to 10 from 30
-  r->Link.timeout = 10;
-  r->Link.swfAge = 30;
+    memset(r, 0, sizeof(RTMP));
+    r->m_sb.sb_socket = -1;
+    r->m_inChunkSize = c.chunkSize == NULL ? RTMP_DEFAULT_CHUNKSIZE : *c.chunkSize;
+    r->m_outChunkSize = c.chunkSize == NULL ? RTMP_DEFAULT_CHUNKSIZE : *c.chunkSize;
+    r->m_nBufferMS = c.bufferMs == NULL ? RTMP_DEFAULT_BUFFER_MS : *c.bufferMs;
+    r->m_nClientBW = 2500000;
+    r->m_nClientBW2 = 2;
+    r->m_nServerBW = 2500000;
+    r->m_fAudioCodecs = 3191.0;
+    r->m_fVideoCodecs = 252.0;
+    //making timeout value to 10 from 30
+    r->Link.timeout = 10;
+    r->Link.swfAge = 30;
 }
 
 void

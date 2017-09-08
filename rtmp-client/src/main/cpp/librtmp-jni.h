@@ -2,6 +2,7 @@
 #include <jni.h>
 #include <stddef.h>
 #include "flvmuxer/xiecc_rtmp.h"
+#include "rtmp.h"
 /* Header for class net_butterflytv_rtmp_client_RtmpClient */
 
 #ifndef _Included_net_butterflytv_rtmp_client_RtmpClient
@@ -9,6 +10,12 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+struct RTMPConfig createRTMPConfig(JNIEnv * env, jobject jc);
+
+void freeRtmpConfig(RTMPConfig config);
+
+int* getInteger(JNIEnv *env, jobject obj, char* fieldName);
 
 /*
  * Class:     net_butterflytv_rtmp_client_RtmpClient
